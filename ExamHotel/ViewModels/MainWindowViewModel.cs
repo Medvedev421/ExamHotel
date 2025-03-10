@@ -1,7 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Collections.ObjectModel;
 using ExamHotel.Models;
-using ReactiveUI;
-using System.Collections.ObjectModel;
 
 namespace ExamHotel.ViewModels
 {

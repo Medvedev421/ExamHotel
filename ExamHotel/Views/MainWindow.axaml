@@ -28,7 +28,9 @@
             <ItemsControl.ItemTemplate>
                 <!-- Шаблон для каждого элемента списка -->
                 <DataTemplate>
-                    <Button Margin="10" HorizontalAlignment="Stretch">
+                    <Button Click="OpenNewWindow"
+                            Margin="10"
+                            HorizontalAlignment="Stretch">
                         <StackPanel HorizontalAlignment="Stretch">
                             <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
                             <TextBlock Text="{Binding Rating, StringFormat='Рейтинг: {0}'}" />

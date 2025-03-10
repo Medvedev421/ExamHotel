@@ -1,0 +1,8 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ExamHotel.Views.InfoWindow"
+        Title="Информация"
+        Width="400"
+        Height="300">
+    <TextBlock Text="Это новое окно с информацией!" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+</Window>
