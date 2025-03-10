@@ -1,19 +1,34 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Controls;
+using Avalonia.Interactivity;
+using ExamHotel.Models;
+using ExamHotel.ViewModels;
 
 namespace ExamHotel.Views
 {
     public partial class InfoWindow : Window
     {
-        public InfoWindow()
+        public InfoWindow(Hotel hotel)
         {
             InitializeComponent();
+            DataContext = hotel; // Устанавливаем DataContext
         }
 
-        private void InitializeComponent()
+        private void GoBack(object sender, RoutedEventArgs e)
         {
-            AvaloniaXamlLoader.Load(this);
+            // Получаем ViewModel текущего окна (InfoWindow)
+            var mainViewModel = this.DataContext as MainWindowViewModel;
+
+            // Создаем новое окно MainWindow
+            var mainWindow = new MainWindow
+            {
+                DataContext = mainViewModel // Устанавливаем существующий ViewModel
+            };
+
+            // Показываем новое окно
+            mainWindow.Show();
+
+            // Закрываем текущее окно
+            this.Close();
         }
     }
 }

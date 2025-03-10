@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using ExamHotel.Models;
+using ExamHotel.DAL;
+using System.Linq;
 
 namespace ExamHotel.ViewModels
 {
@@ -10,10 +12,30 @@ namespace ExamHotel.ViewModels
 
         public MainWindowViewModel()
         {
-            // Заполняем список отелей (пока тестовыми данными)
-            Hotels.Add(new Hotel { HotelID = 1, Name = "Отель Люкс", Rating = 4.5m, Address = "ул. Центральная, 123" });
-            Hotels.Add(new Hotel { HotelID = 2, Name = "Отель Стандарт", Rating = 3.8m, Address = "ул. Парковая, 45" });
-            Hotels.Add(new Hotel { HotelID = 3, Name = "Отель Эконом", Rating = 2.9m, Address = "ул. Лесная, 67" });
+            // Загружаем данные из базы данных
+            LoadHotels();
+        }
+
+        private void LoadHotels()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                if (!context.Hotels.Any())
+                {
+                    // Добавляем тестовые данные
+                    context.Hotels.Add(new Hotel { Name = "Отель Люкс", Rating = 4.5m, Address = "ул. Центральная, 123" });
+                    context.Hotels.Add(new Hotel { Name = "Отель Стандарт", Rating = 3.8m, Address = "ул. Парковая, 45" });
+                    context.Hotels.Add(new Hotel { Name = "Отель Эконом", Rating = 2.9m, Address = "ул. Лесная, 67" });
+                    context.SaveChanges();
+                }
+
+                // Загружаем данные
+                var hotels = context.Hotels.ToList();
+                foreach (var hotel in hotels)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
         }
     }
 }
