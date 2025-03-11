@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ExamHotel.Views;
 using ExamHotel.Models;
+using ExamHotel.ViewModels;
 
 namespace ExamHotel.Views
 {
@@ -10,6 +11,7 @@ namespace ExamHotel.Views
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = MainWindowViewModel.Instance; // Используем Singleton
         }
 
         // Обработчик события Click для кнопки

@@ -10,18 +10,15 @@ namespace ExamHotel.Views
         public InfoWindow(Hotel hotel)
         {
             InitializeComponent();
-            DataContext = hotel; // Устанавливаем DataContext
+            DataContext = hotel; // Устанавливаем DataContext для текущего отеля
         }
 
         private void GoBack(object sender, RoutedEventArgs e)
         {
-            // Получаем ViewModel текущего окна (InfoWindow)
-            var mainViewModel = this.DataContext as MainWindowViewModel;
-
-            // Создаем новое окно MainWindow
+            // Создаем новое окно MainWindow с Singleton ViewModel
             var mainWindow = new MainWindow
             {
-                DataContext = mainViewModel // Устанавливаем существующий ViewModel
+                DataContext = MainWindowViewModel.Instance // Используем Singleton
             };
 
             // Показываем новое окно

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using ExamHotel.ViewModels;
 
 namespace ExamHotel
 {
@@ -18,7 +19,7 @@ namespace ExamHotel
             {
                 desktop.MainWindow = new Views.MainWindow
                 {
-                    DataContext = new ViewModels.MainWindowViewModel() // Устанавливаем DataContext
+                    DataContext = MainWindowViewModel.Instance // Используем Singleton
                 };
             }
 
