@@ -1,33 +1,21 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:models="clr-namespace:ExamHotel.Models"
         x:Class="ExamHotel.Views.InfoWindow"
         Title="Информация об отеле"
         Width="600"
-        Height="400"
-        x:DataType="models:Hotel">
+        Height="600">
     <DockPanel>
-        <!-- Кнопка "Назад" в левом верхнем углу -->
-        <Button Content="Назад"
+        <Button Name="BackButton"
+                Content="Назад"
                 DockPanel.Dock="Top"
                 HorizontalAlignment="Left"
-                Margin="10"
-                Click="GoBack"/>
+                Margin="10"/>
 
-        <!-- Основная информация об отеле -->
         <ScrollViewer>
-            <StackPanel Margin="20" Spacing="10">
-                <!-- Название отеля -->
-                <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="Bold" TextAlignment="Center"/>
-
-                <!-- Рейтинг -->
-                <TextBlock Text="{Binding Rating, StringFormat='Рейтинг: {0}'}" FontSize="18" TextAlignment="Center"/>
-
-                <!-- Адрес -->
-                <TextBlock Text="{Binding Address}" FontSize="18" TextAlignment="Center"/>
-
-                <!-- Описание -->
-                <TextBlock Text="{Binding Description}" FontSize="16" TextWrapping="Wrap" Margin="0, 20, 0, 0"/>
+            <StackPanel Name="MainStackPanel" 
+                        Margin="20" 
+                        Spacing="10">
+                <!-- Здесь будут добавляться элементы в коде -->
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

@@ -6,6 +6,7 @@ namespace ExamHotel.DAL
     public class ApplicationDbContext : DbContext
     {
         // Таблицы базы данных
+        public DbSet<Booking> Bookings { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
