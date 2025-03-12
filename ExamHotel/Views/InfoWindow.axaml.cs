@@ -4,6 +4,7 @@ using ExamHotel.Models;
 using ExamHotel.ViewModels;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ExamHotel.Views
 {
@@ -15,6 +16,7 @@ namespace ExamHotel.Views
         {
             InitializeComponent();
             _viewModel = new BookingViewModel(hotel);
+            DataContext = _viewModel; // Устанавливаем DataContext
             SetupUI(); // Настраиваем интерфейс
             BackButton.Click += GoBack; // Обработчик кнопки "Назад"
         }
@@ -145,19 +147,24 @@ namespace ExamHotel.Views
             this.Close();
         }
 
-        private void BookRoom(object sender, RoutedEventArgs e)
+        private async void BookRoom(object sender, RoutedEventArgs e)
         {
-            // Логика бронирования
-            var person = new Person
-            {
-                FirstName = "Иван",
-                LastName = "Иванов",
-                PhoneNumber = "1234567890",
-                PassportID = 1
-            };
+            // Открываем окно ввода данных
+            var bookingFormWindow = new BookingFormWindow();
+            bool result = await bookingFormWindow.ShowDialog<bool>(this); // Используем await
 
-            _viewModel.BookRoom(person);
-            // Можно добавить уведомление об успешном бронировании
+            if (result)
+            {
+                // Получаем данные пользователя
+                var person = bookingFormWindow.Person;
+
+                // Выполняем бронирование
+                _viewModel.BookRoom(person);
+
+                // Показываем уведомление об успешном бронировании
+                var messageBox = new MessageBox("Бронирование успешно завершено!");
+                await messageBox.ShowDialog(this); // Используем await
+            }
         }
     }
 }

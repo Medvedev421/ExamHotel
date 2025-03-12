@@ -10,6 +10,7 @@ namespace ExamHotel.ViewModels
     {
         private Hotel _hotel;
         
+        public bool CanBookRoom => SelectedRoomType != null && SelectedRoom != null && CheckInDate < CheckOutDate;
         public string Name => _hotel.Name; // Название отеля
         public decimal Rating => _hotel.Rating; // Рейтинг отеля
         public string Address => _hotel.Address; // Адрес отеля
@@ -25,6 +26,7 @@ namespace ExamHotel.ViewModels
             {
                 _selectedRoomType = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CanBookRoom)); // Уведомляем об изменении
                 LoadAvailableRooms();
             }
         }
@@ -37,6 +39,7 @@ namespace ExamHotel.ViewModels
             {
                 _selectedRoom = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CanBookRoom)); // Уведомляем об изменении
             }
         }
 
@@ -48,6 +51,7 @@ namespace ExamHotel.ViewModels
             {
                 _checkInDate = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CanBookRoom)); // Уведомляем об изменении
             }
         }
 
@@ -57,8 +61,16 @@ namespace ExamHotel.ViewModels
             get => _checkOutDate;
             set
             {
-                _checkOutDate = value;
+                if (value > CheckInDate) // Проверяем, что дата выезда позже даты заезда
+                {
+                    _checkOutDate = value;
+                }
+                else
+                {
+                    _checkOutDate = CheckInDate.AddDays(1); // Устанавливаем минимальную дату
+                }
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CanBookRoom));
             }
         }
 

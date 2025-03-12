@@ -1,9 +1,11 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:ExamHotel.ViewModels"
         x:Class="ExamHotel.Views.InfoWindow"
         Title="Информация об отеле"
         Width="600"
-        Height="600">
+        Height="600"
+        x:DataType="viewModels:BookingViewModel">
     <DockPanel>
         <Button Name="BackButton"
                 Content="Назад"
@@ -16,6 +18,10 @@
                         Margin="20" 
                         Spacing="10">
                 <!-- Здесь будут добавляться элементы в коде -->
+                <Button Content="Забронировать"
+                        Margin="0, 20, 0, 0"
+                        IsEnabled="{Binding CanBookRoom}"
+                        Click="BookRoom" />
             </StackPanel>
         </ScrollViewer>
     </DockPanel>
