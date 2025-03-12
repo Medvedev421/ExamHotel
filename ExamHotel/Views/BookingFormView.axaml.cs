@@ -1,21 +1,21 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ExamHotel.Models;
+using System.Threading.Tasks;
 
 namespace ExamHotel.Views
 {
-    public partial class BookingFormWindow : Window
+    public partial class BookingFormView : BaseView
     {
         public Person Person { get; private set; }
 
-        public BookingFormWindow()
+        public BookingFormView()
         {
             InitializeComponent();
         }
 
         private void OnConfirmButtonClick(object sender, RoutedEventArgs e)
         {
-            // Создаем объект Person с введенными данными
             Person = new Person
             {
                 FirstName = FirstNameTextBox.Text,
@@ -26,11 +26,17 @@ namespace ExamHotel.Views
                     PassportNumber = PassportSeriesNumberTextBox.Text.Split(' ')[1],
                     DepartmentCode = PassportIssuedByTextBox.Text
                 },
-                PhoneNumber = EmailTextBox.Text // Используем Email как PhoneNumber для примера
+                PhoneNumber = EmailTextBox.Text
             };
 
-            // Закрываем окно с результатом OK
-            Close(true);
+            var mainWindow = (MainWindow)Parent;
+            mainWindow.NavigateBack();
+        }
+
+        public Task<bool> GetPersonAsync()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            return tcs.Task;
         }
     }
 }

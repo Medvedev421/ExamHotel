@@ -1,31 +1,17 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="ExamHotel.Views.BookingFormWindow"
-        Title="Ввод данных для бронирования"
-        Width="400"
-        Height="400">
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ExamHotel.Views.BookingFormView">
     <StackPanel Margin="20" Spacing="10">
-        <!-- Имя -->
         <TextBlock Text="Имя:" />
         <TextBox Name="FirstNameTextBox" />
-
-        <!-- Фамилия -->
         <TextBlock Text="Фамилия:" />
         <TextBox Name="LastNameTextBox" />
-
-        <!-- Серия и номер паспорта -->
         <TextBlock Text="Серия и номер паспорта:" />
         <TextBox Name="PassportSeriesNumberTextBox" />
-
-        <!-- Кем выдан паспорт -->
         <TextBlock Text="Кем выдан паспорт:" />
         <TextBox Name="PassportIssuedByTextBox" />
-
-        <!-- Электронная почта -->
         <TextBlock Text="Электронная почта:" />
         <TextBox Name="EmailTextBox" />
-
-        <!-- Кнопка подтверждения -->
         <Button Content="Подтвердить" Click="OnConfirmButtonClick" />
     </StackPanel>
-</Window>
+</UserControl>

@@ -1,8 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using ExamHotel.Views;
-using ExamHotel.Models;
-using ExamHotel.ViewModels;
 
 namespace ExamHotel.Views
 {
@@ -11,23 +7,19 @@ namespace ExamHotel.Views
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = MainWindowViewModel.Instance; // Используем Singleton
+            NavigateTo(new HotelListView());
         }
 
-        // Обработчик события Click для кнопки
-        private void OpenNewWindow(object sender, RoutedEventArgs e)
+        public void NavigateTo(BaseView view)
         {
-            // Получаем данные об отеле из DataContext кнопки
-            if (sender is Button button && button.DataContext is Hotel hotel)
+            MainContent.Content = view;
+        }
+
+        public void NavigateBack()
+        {
+            if (MainContent.Content is BaseView currentView)
             {
-                // Создаем новое окно
-                var newWindow = new InfoWindow(hotel);
-
-                // Показываем новое окно
-                newWindow.Show();
-
-                // Скрываем текущее окно
-                this.Hide();
+                // Логика для возврата на предыдущее представление
             }
         }
     }

@@ -1,0 +1,24 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ExamHotel.ViewModels"
+             xmlns:models="clr-namespace:ExamHotel.Models"
+             x:Class="ExamHotel.Views.HotelListView"
+             x:DataType="vm:MainWindowViewModel">
+    <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding Hotels}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Click="OpenHotelInfo"
+                            Margin="10"
+                            HorizontalAlignment="Stretch">
+                        <StackPanel HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Rating, StringFormat='Рейтинг: {0}'}" />
+                            <TextBlock Text="{Binding Address}" />
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>

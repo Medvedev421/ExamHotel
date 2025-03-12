@@ -1,0 +1,8 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ExamHotel.Views.MessageBoxView">
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock Name="MessageText" TextWrapping="Wrap" />
+        <Button Content="OK" HorizontalAlignment="Center" Click="OnOkButtonClick" />
+    </StackPanel>
+</UserControl>

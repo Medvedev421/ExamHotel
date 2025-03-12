@@ -3,9 +3,9 @@ using Avalonia.Interactivity;
 
 namespace ExamHotel.Views
 {
-    public partial class MessageBox : Window
+    public partial class MessageBoxView : BaseView
     {
-        public MessageBox(string message)
+        public MessageBoxView(string message)
         {
             InitializeComponent();
             MessageText.Text = message;
@@ -13,7 +13,8 @@ namespace ExamHotel.Views
 
         private void OnOkButtonClick(object sender, RoutedEventArgs e)
         {
-            Close(true); // Закрываем окно с результатом true
+            var mainWindow = (MainWindow)Parent;
+            mainWindow.NavigateBack();
         }
     }
 }
