@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree; // Добавьте этот using
 
 namespace ExamHotel.Views
 {
@@ -13,7 +14,15 @@ namespace ExamHotel.Views
 
         private void OnOkButtonClick(object sender, RoutedEventArgs e)
         {
-            var mainWindow = (MainWindow)Parent;
+            // Получаем корневое окно
+            var mainWindow = (MainWindow)TopLevel.GetTopLevel(this);
+            if (mainWindow == null)
+            {
+                // Если окно не найдено, выходим
+                return;
+            }
+
+            // Возвращаемся назад
             mainWindow.NavigateBack();
         }
     }

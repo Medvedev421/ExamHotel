@@ -3,6 +3,9 @@ using ExamHotel.Models;
 using ExamHotel.DAL;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
+using ExamHotel.Views;
 
 namespace ExamHotel.ViewModels
 {
@@ -110,21 +113,39 @@ namespace ExamHotel.ViewModels
             }
         }
 
-        public void BookRoom(Person person)
+        public void BookRoom(Person person, Visual visual)
         {
             if (SelectedRoom != null && CheckInDate < CheckOutDate)
             {
                 using (var context = new ApplicationDbContext())
                 {
+                    // Сохраняем паспортные данные
+                    context.Passports.Add(person.Passport);
+                    context.SaveChanges();
+
+                    // Сохраняем данные о человеке
+                    person.PassportID = person.Passport.PassportID;
+                    context.People.Add(person);
+                    context.SaveChanges();
+
+                    // Создаем бронирование
                     var booking = new Booking
                     {
                         RoomID = SelectedRoom.RoomID,
-                        CheckInDate = CheckInDate,
-                        CheckOutDate = CheckOutDate,
+                        CheckInDate = CheckInDate.ToUniversalTime(), // Преобразуем в UTC
+                        CheckOutDate = CheckOutDate.ToUniversalTime(), // Преобразуем в UTC
                         PersonID = person.PersonID
                     };
                     context.Bookings.Add(booking);
                     context.SaveChanges();
+                }
+
+                // Получаем корневое окно
+                var mainWindow = (MainWindow)TopLevel.GetTopLevel(visual);
+                if (mainWindow != null)
+                {
+                    // Выводим сообщение об успешном завершении бронирования
+                    mainWindow.NavigateTo(new MessageBoxView("Бронирование успешно завершено!"));
                 }
             }
         }

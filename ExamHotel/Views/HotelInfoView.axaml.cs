@@ -139,7 +139,6 @@ namespace ExamHotel.Views
 
         private async void BookRoom(object sender, RoutedEventArgs e)
         {
-            // Получаем текущее окно
             var topLevel = TopLevel.GetTopLevel(this);
             if (topLevel is MainWindow mainWindow)
             {
@@ -148,10 +147,10 @@ namespace ExamHotel.Views
                 mainWindow.NavigateTo(bookingFormView);
 
                 // Ожидаем завершения ввода данных
-                if (await bookingFormView.GetPersonAsync())
+                var person = await bookingFormView.GetPersonAsync();
+                if (person != null)
                 {
-                    _viewModel.BookRoom(bookingFormView.Person);
-                    mainWindow.NavigateTo(new MessageBoxView("Бронирование успешно завершено!"));
+                    _viewModel.BookRoom(person, this);
                 }
             }
         }
