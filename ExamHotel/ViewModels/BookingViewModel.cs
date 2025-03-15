@@ -1,8 +1,8 @@
 ﻿using System;
-using ExamHotel.Models;
-using ExamHotel.DAL;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ExamHotel.Models;
+using ExamHotel.DAL;
 using Avalonia;
 using Avalonia.Controls;
 using ExamHotel.Views;
@@ -12,14 +12,20 @@ namespace ExamHotel.ViewModels
     public class BookingViewModel : ViewModelBase
     {
         private Hotel _hotel;
-        
-        public bool CanBookRoom => SelectedRoomType != null && SelectedRoom != null && CheckInDate < CheckOutDate;
+
+        public bool CanBookRoom => SelectedRoomType != null && CheckInDate < CheckOutDate;
         public string Name => _hotel.Name; // Название отеля
         public decimal Rating => _hotel.Rating; // Рейтинг отеля
         public string Address => _hotel.Address; // Адрес отеля
         public string Description => _hotel.Description; // Описание отеля
         public ObservableCollection<RoomType> RoomTypes { get; } = new ObservableCollection<RoomType>();
-        public ObservableCollection<Room> AvailableRooms { get; } = new ObservableCollection<Room>();
+
+        // Варианты питания
+        public ObservableCollection<string> MealOptions { get; } = new ObservableCollection<string>
+        {
+            "Питание включено",
+            "Питание не включено"
+        };
 
         private RoomType _selectedRoomType;
         public RoomType SelectedRoomType
@@ -30,24 +36,25 @@ namespace ExamHotel.ViewModels
                 _selectedRoomType = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(CanBookRoom)); // Уведомляем об изменении
-                LoadAvailableRooms();
+                UpdatePrice(); // Обновляем цену при изменении типа номера
             }
         }
 
-        private Room _selectedRoom;
-        public Room SelectedRoom
+        private string _selectedMealOption;
+        public string SelectedMealOption
         {
-            get => _selectedRoom;
+            get => _selectedMealOption;
             set
             {
-                _selectedRoom = value;
+                _selectedMealOption = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(CanBookRoom)); // Уведомляем об изменении
+                UpdatePrice(); // Обновляем цену при изменении питания
             }
         }
 
-        private DateTime _checkInDate = DateTime.Today;
-        public DateTime CheckInDate
+        private DateTimeOffset? _checkInDate = DateTimeOffset.Now;
+        public DateTimeOffset? CheckInDate
         {
             get => _checkInDate;
             set
@@ -55,11 +62,13 @@ namespace ExamHotel.ViewModels
                 _checkInDate = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(CanBookRoom)); // Уведомляем об изменении
+                UpdateNumberOfDays(); // Обновляем количество дней
+                UpdatePrice(); // Обновляем цену
             }
         }
 
-        private DateTime _checkOutDate = DateTime.Today.AddDays(1);
-        public DateTime CheckOutDate
+        private DateTimeOffset? _checkOutDate = DateTimeOffset.Now.AddDays(1);
+        public DateTimeOffset? CheckOutDate
         {
             get => _checkOutDate;
             set
@@ -70,10 +79,35 @@ namespace ExamHotel.ViewModels
                 }
                 else
                 {
-                    _checkOutDate = CheckInDate.AddDays(1); // Устанавливаем минимальную дату
+                    _checkOutDate = CheckInDate?.AddDays(1); // Устанавливаем минимальную дату
                 }
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(CanBookRoom));
+                UpdateNumberOfDays(); // Обновляем количество дней
+                UpdatePrice(); // Обновляем цену
+            }
+        }
+
+        private int _numberOfDays;
+        public int NumberOfDays
+        {
+            get => _numberOfDays;
+            private set
+            {
+                _numberOfDays = value;
+                RaisePropertyChanged();
+                UpdatePrice(); // Обновляем цену при изменении количества дней
+            }
+        }
+
+        private decimal? _price;
+        public decimal? Price
+        {
+            get => _price;
+            private set
+            {
+                _price = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -81,6 +115,7 @@ namespace ExamHotel.ViewModels
         {
             _hotel = hotel;
             LoadRoomTypes();
+            UpdateNumberOfDays(); // Инициализируем количество дней
         }
 
         private void LoadRoomTypes()
@@ -95,27 +130,44 @@ namespace ExamHotel.ViewModels
             }
         }
 
-        private void LoadAvailableRooms()
+        // Метод для обновления количества дней
+        private void UpdateNumberOfDays()
         {
-            AvailableRooms.Clear();
-            if (SelectedRoomType != null)
+            if (CheckInDate.HasValue && CheckOutDate.HasValue)
             {
-                using (var context = new ApplicationDbContext())
-                {
-                    var rooms = context.Rooms
-                        .Where(r => r.HotelID == _hotel.HotelID && r.RoomTypeID == SelectedRoomType.RoomTypeID)
-                        .ToList();
-                    foreach (var room in rooms)
-                    {
-                        AvailableRooms.Add(room);
-                    }
-                }
+                NumberOfDays = (int)(CheckOutDate.Value - CheckInDate.Value).TotalDays;
             }
+            else
+            {
+                NumberOfDays = 0;
+            }
+        }
+
+        // Метод для обновления цены
+        private void UpdatePrice()
+        {
+            if (SelectedRoomType == null || SelectedMealOption == null || NumberOfDays <= 0)
+            {
+                Price = null; // Если тип номера, питание или количество дней не выбраны, цена не отображается
+                return;
+            }
+
+            // Базовая цена из типа номера
+            decimal basePrice = SelectedRoomType.Price;
+
+            // Добавляем стоимость питания, если выбрано "Питание включено"
+            if (SelectedMealOption == "Питание включено")
+            {
+                basePrice += 500; // Например, 500 рублей за питание в день
+            }
+
+            // Умножаем на количество дней
+            Price = basePrice * NumberOfDays;
         }
 
         public void BookRoom(Person person, Visual visual)
         {
-            if (SelectedRoom != null && CheckInDate < CheckOutDate)
+            if (SelectedRoomType != null && CheckInDate < CheckOutDate)
             {
                 using (var context = new ApplicationDbContext())
                 {
@@ -128,16 +180,23 @@ namespace ExamHotel.ViewModels
                     context.People.Add(person);
                     context.SaveChanges();
 
-                    // Создаем бронирование
-                    var booking = new Booking
+                    // Выбираем первый доступный номер выбранного типа
+                    var room = context.Rooms
+                        .FirstOrDefault(r => r.HotelID == _hotel.HotelID && r.RoomTypeID == SelectedRoomType.RoomTypeID);
+
+                    if (room != null)
                     {
-                        RoomID = SelectedRoom.RoomID,
-                        CheckInDate = CheckInDate.ToUniversalTime(), // Преобразуем в UTC
-                        CheckOutDate = CheckOutDate.ToUniversalTime(), // Преобразуем в UTC
-                        PersonID = person.PersonID
-                    };
-                    context.Bookings.Add(booking);
-                    context.SaveChanges();
+                        // Создаем бронирование
+                        var booking = new Booking
+                        {
+                            RoomID = room.RoomID,
+                            CheckInDate = CheckInDate?.UtcDateTime ?? DateTime.UtcNow,
+                            CheckOutDate = CheckOutDate?.UtcDateTime ?? DateTime.UtcNow.AddDays(1),
+                            PersonID = person.PersonID
+                        };
+                        context.Bookings.Add(booking);
+                        context.SaveChanges();
+                    }
                 }
 
                 // Получаем корневое окно

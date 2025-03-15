@@ -1,24 +1,44 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ExamHotel.ViewModels"
-             xmlns:models="clr-namespace:ExamHotel.Models"
+             xmlns:local="clr-namespace:ExamHotel.Converters"
              x:Class="ExamHotel.Views.HotelListView"
              x:DataType="vm:MainWindowViewModel">
-    <ScrollViewer>
-        <ItemsControl ItemsSource="{Binding Hotels}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Click="OpenHotelInfo"
-                            Margin="10"
-                            HorizontalAlignment="Stretch">
-                        <StackPanel HorizontalAlignment="Stretch">
-                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
-                            <TextBlock Text="{Binding Rating, StringFormat='Рейтинг: {0}'}" />
-                            <TextBlock Text="{Binding Address}" />
-                        </StackPanel>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </ScrollViewer>
+    <DockPanel>
+        <!-- Фильтры -->
+        <StackPanel DockPanel.Dock="Top" Margin="10" Spacing="10">
+            <TextBlock Text="Фильтры" FontSize="18" FontWeight="Bold" />
+
+            <!-- Фильтр по типу отеля -->
+            <TextBlock Text="Тип отеля:" FontSize="16" />
+            <ComboBox ItemsSource="{Binding HotelTypes}"
+                      SelectedItem="{Binding SelectedHotelType}"
+                      Margin="0,5,0,0" />
+
+            <!-- Фильтр по рейтингу -->
+            <TextBlock Text="Рейтинг:" FontSize="16" Margin="0,10,0,0" />
+            <ComboBox ItemsSource="{Binding RatingFilters}"
+                      SelectedItem="{Binding SelectedRatingFilter}"
+                      Margin="0,5,0,0" />
+        </StackPanel>
+
+        <!-- Список отелей -->
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Hotels}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Click="OpenHotelInfo"
+                                Margin="10"
+                                HorizontalAlignment="Stretch">
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Rating, StringFormat='Рейтинг: {0}'}" />
+                                <TextBlock Text="{Binding Address}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

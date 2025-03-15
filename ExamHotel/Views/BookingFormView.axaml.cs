@@ -3,6 +3,7 @@ using Avalonia.Interactivity;
 using ExamHotel.Models;
 using System.Threading.Tasks;
 using Avalonia.VisualTree;
+using System.Text.RegularExpressions; // Добавляем для работы с регулярными выражениями
 
 namespace ExamHotel.Views
 {
@@ -53,6 +54,22 @@ namespace ExamHotel.Views
                 return;
             }
 
+            // Проверяем, что серия и номер паспорта содержат только числа
+            if (!IsNumeric(passportParts[0]) || !IsNumeric(passportParts[1]))
+            {
+                // Выводим сообщение об ошибке
+                mainWindow.NavigateTo(new MessageBoxView("Серия и номер паспорта должны содержать только цифры!"));
+                return;
+            }
+
+            // Проверяем корректность электронной почты
+            if (!IsValidEmail(EmailTextBox.Text))
+            {
+                // Выводим сообщение об ошибке
+                mainWindow.NavigateTo(new MessageBoxView("Некорректный формат электронной почты!"));
+                return;
+            }
+
             // Создаем объект Person
             Person = new Person
             {
@@ -79,6 +96,26 @@ namespace ExamHotel.Views
         public Task<Person> GetPersonAsync()
         {
             return _tcs.Task;
+        }
+
+        // Метод для проверки, что строка содержит только числа
+        private bool IsNumeric(string input)
+        {
+            return Regex.IsMatch(input, @"^\d+$");
+        }
+
+        // Метод для проверки корректности электронной почты
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
