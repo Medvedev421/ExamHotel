@@ -13,9 +13,9 @@ namespace ExamHotel.Converters
             return value != null; // Возвращаем true, если значение не null, иначе false
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
